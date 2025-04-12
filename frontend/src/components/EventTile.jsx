@@ -8,13 +8,18 @@ import { toggleEventExpanded, deleteEvent } from '../redux/slices/eventsSlice';
 const EventTile = ({ event, currentWeek, viewType }) => {
   const dispatch = useDispatch();
   
-  // Configure drag and drop with better item data
+  // Update your useDrag implementation
   const [{ isDragging }, drag, preview] = useDrag({
     type: 'EVENT',
     item: () => ({ 
       id: event._id, 
       type: 'EVENT',
-      originalEvent: event 
+      originalEvent: {
+        ...event,
+        startTime: new Date(event.startTime).toISOString(),
+        endTime: new Date(event.endTime).toISOString(),
+        date: new Date(event.date).toISOString()
+      }
     }),
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),

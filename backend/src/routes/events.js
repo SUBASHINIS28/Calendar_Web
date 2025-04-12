@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Event = require('../models/Event');
+const { createEvent, updateEvent, deleteEvent, getEvent } = require('../controllers/eventsController');
 
 // Get all events with optimization
 router.get('/', async (req, res) => {
@@ -19,6 +20,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Other routes...
+// Add missing routes
+router.post('/', createEvent);
+router.get('/:id', getEvent);
+router.put('/:id', updateEvent);
+router.delete('/:id', deleteEvent);
 
 module.exports = router;

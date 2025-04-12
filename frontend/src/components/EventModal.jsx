@@ -69,7 +69,7 @@ const EventModal = ({ isOpen, onClose, initialData, editMode = false }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Parse dates for API
+    // Create proper Date objects for the backend
     const date = new Date(formData.date);
     
     // Create startTime by combining date with time
@@ -88,13 +88,13 @@ const EventModal = ({ isOpen, onClose, initialData, editMode = false }) => {
       return;
     }
     
-    // Prepare event data
+    // Prepare event data - use ISO strings to preserve time info
     const eventData = {
       title: formData.title,
       category: formData.category,
-      date: date,
-      startTime: startTime,
-      endTime: endTime,
+      date: date.toISOString(),
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
       color: formData.color,
       isExpanded: false
     };

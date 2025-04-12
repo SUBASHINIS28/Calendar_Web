@@ -44,9 +44,18 @@ exports.getEvent = async (req, res) => {
 // @access  Public
 exports.createEvent = async (req, res) => {
   try {
-    const event = await Event.create(req.body);
+    // Ensure dates are properly parsed
+    const eventData = {
+      ...req.body,
+      startTime: new Date(req.body.startTime),
+      endTime: new Date(req.body.endTime),
+      date: new Date(req.body.date)
+    };
+    
+    const event = await Event.create(eventData);
     res.status(201).json(event);
   } catch (error) {
+    console.error("Error creating event:", error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -56,9 +65,25 @@ exports.createEvent = async (req, res) => {
 // @access  Public
 exports.updateEvent = async (req, res) => {
   try {
+    // Ensure dates are properly parsed
+    const eventData = {
+      ...req.body
+    };
+    
+    // Only convert strings to dates (to avoid double conversion)
+    if (typeof req.body.startTime === 'string') {
+      eventData.startTime = new Date(req.body.startTime);
+    }
+    if (typeof req.body.endTime === 'string') {
+      eventData.endTime = new Date(req.body.endTime);
+    }
+    if (typeof req.body.date === 'string') {
+      eventData.date = new Date(req.body.date);
+    }
+    
     const event = await Event.findByIdAndUpdate(
       req.params.id, 
-      req.body, 
+      eventData, 
       { new: true, runValidators: true }
     );
     
@@ -68,6 +93,7 @@ exports.updateEvent = async (req, res) => {
     
     res.status(200).json(event);
   } catch (error) {
+    console.error("Error updating event:", error);
     res.status(400).json({ message: error.message });
   }
 };

@@ -288,7 +288,7 @@ const Calendar = () => {
 
     // Handle event drop
     const handleEventDrop = (item, day, timeSlot) => {
-      // Implementation for handling event drops remains similar
+      // Create a target date object for where the event is being dropped
       let slotDate;
       
       if (viewType === 'day') {
@@ -296,6 +296,7 @@ const Calendar = () => {
       } else if (viewType === 'month') {
         slotDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), parseInt(day));
       } else {
+        // For week view
         slotDate = new Date(currentWeek.startDate);
         slotDate.setDate(slotDate.getDate() + daysOfWeek.indexOf(day));
       }
@@ -311,9 +312,15 @@ const Calendar = () => {
       const draggedEvent = events.find(event => event._id === item.id);
       
       if (draggedEvent) {
-        const eventDuration = new Date(draggedEvent.endTime) - new Date(draggedEvent.startTime);
+        // Calculate duration of original event to maintain same length
+        const eventStart = new Date(draggedEvent.startTime);
+        const eventEnd = new Date(draggedEvent.endTime);
+        const eventDuration = eventEnd - eventStart;
+        
+        // Calculate new end time based on the duration
         const newEndTime = new Date(slotDate.getTime() + eventDuration);
         
+        // Check for overlaps
         const hasOverlap = checkEventOverlap(draggedEvent, slotDate, newEndTime);
         
         if (hasOverlap) {
@@ -321,13 +328,15 @@ const Calendar = () => {
           return;
         }
         
+        // Create updated event data
         const updatedEvent = {
           ...draggedEvent,
-          startTime: slotDate,
-          endTime: newEndTime,
-          date: new Date(new Date(slotDate).setHours(0, 0, 0, 0))
+          startTime: slotDate.toISOString(),
+          endTime: newEndTime.toISOString(),
+          date: new Date(slotDate.setHours(0, 0, 0, 0)).toISOString()
         };
         
+        // Dispatch the update action
         dispatch(updateEvent({ 
           id: draggedEvent._id, 
           eventData: updatedEvent 

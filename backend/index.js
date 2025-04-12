@@ -14,8 +14,14 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// Enable CORS
-app.use(cors());
+// Enable CORS with updated configuration
+app.use(cors({
+  origin: [
+    'https://frontend-ldtg0ds9v-subashini-ss-projects.vercel.app',
+    'http://localhost:3000'
+  ],
+  credentials: true
+}));
 
 // Routes
 app.use('/api/events', require('./src/routes/events'));

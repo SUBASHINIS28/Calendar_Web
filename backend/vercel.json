@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ],
+  "env": {
+    "MONGODB_URI": "mongodb+srv://calendarapp:24Subamongodb@calendar.6fy869u.mongodb.net/calendar?retryWrites=true&w=majority"
+  }
+}

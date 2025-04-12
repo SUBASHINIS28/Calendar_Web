@@ -1,0 +1,480 @@
+.calendar-container {
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+  overflow: auto;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nav-button {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: #e0e0e0;
+}
+
+.calendar-grid {
+  display: flex;
+  width: 100%;
+  position: relative;
+  overflow: auto;
+  height: 700px;
+}
+
+.time-column {
+  min-width: 80px;
+  border-right: 1px solid #e0e0e0;
+}
+
+.day-column {
+  flex: 1;
+  min-width: 150px;
+  border-right: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.day-column:last-child {
+  border-right: none;
+}
+
+.header-cell {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.time-cell {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 12px;
+  color: #666;
+}
+
+.calendar-cell {
+  height: 40px;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+  cursor: pointer;
+}
+
+.calendar-cell:hover {
+  background-color: #f5f5f5;
+}
+
+.calendar-cell.drop-hover {
+  background-color: rgba(52, 152, 219, 0.3) !important;
+  border: 2px dashed #3498db !important;
+  z-index: 5;
+}
+
+.event-tile {
+  position: relative; /* Ensure proper positioning for the delete button */
+  border-radius: 4px;
+  padding: 4px 8px;
+  overflow: hidden;
+  cursor: grab;
+  z-index: 2;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Add these styles to improve visibility of short events */
+
+.event-tile {
+  min-height: 20px;
+  overflow: hidden;
+  position: absolute;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 2px 6px;
+  box-sizing: border-box;
+  font-size: 12px;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.1s;
+  z-index: 5;
+}
+
+/* Enhance visibility for very short events */
+.event-tile[style*="height: 20px"] {
+  font-size: 10px;
+  padding: 2px 4px;
+  border-left: 3px solid rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+}
+
+/* Make event titles and times fit better in small events */
+.event-tile .event-title,
+.event-tile .event-time {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ensure small events are still clickable and visually distinct */
+.event-tile:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  z-index: 10;
+}
+
+.event-tile:hover {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.event-tile.expanded {
+  z-index: 3;
+}
+
+.event-tile.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.event-tile:active {
+  cursor: grabbing;
+}
+
+.event-content {
+  width: calc(100% - 20px); /* Make room for the delete button */
+}
+
+.event-delete-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.event-tile:hover .event-delete-btn {
+  opacity: 1;
+}
+
+.event-delete-btn:hover {
+  background-color: #e74c3c;
+}
+
+.event-title {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+}
+
+.event-time {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.event-details {
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.event-category {
+  margin-top: 3px;
+  text-transform: capitalize;
+}
+
+.loading, .error {
+  text-align: center;
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.loading {
+  background-color: #f8f9fa;
+  color: #666;
+}
+
+.error {
+  background-color: #fee;
+  color: #e74c3c;
+}
+
+/* Add this to your existing CSS */
+
+.event-tile.deleting {
+  pointer-events: none;
+  background-image: linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1) 75%, transparent 75%, transparent);
+  background-size: 10px 10px;
+  animation: moving-stripes 1s linear infinite;
+}
+
+@keyframes moving-stripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 20px 0;
+  }
+}
+
+/* Add these new styles to your existing calendar.css file */
+
+/* View buttons styling */
+.view-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.view-button {
+  padding: 6px 12px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.view-button.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.view-button:hover:not(.active) {
+  background-color: #e0e0e0;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.today-button {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.today-button:hover {
+  background-color: #27ae60;
+}
+
+/* Day view styling */
+.day-view {
+  display: flex;
+  width: 100%;
+  overflow: auto;
+  height: 700px;
+}
+
+.single-day {
+  width: 100%;
+}
+
+.day-slots {
+  display: flex;
+  flex-direction: column;
+}
+
+.day-time-slot {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.day-time-slot .time-cell {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.day-time-slot .calendar-cell {
+  flex: 1;
+  height: 40px;
+}
+
+/* Month view styling */
+.month-view {
+  width: 100%;
+  height: 700px;
+  overflow: auto;
+}
+
+.month-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.month-weekday {
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  height: calc(100% - 41px);
+}
+
+.month-cell {
+  border: 1px solid #e0e0e0;
+  min-height: 100px;
+  padding: 5px;
+  overflow: hidden;
+  background-color: white;
+  position: relative;
+}
+
+.month-cell.other-month {
+  background-color: #f8f9fa;
+  color: #999;
+}
+
+.month-cell.today {
+  background-color: #e8f4fd;
+}
+
+.month-cell:hover {
+  background-color: #f5f5f5;
+}
+
+.month-cell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.day-number {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.month-cell-events {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.month-event {
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.more-events {
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* Year view styling */
+.year-view {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+  height: 700px;
+}
+
+.year-cell {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.year-cell:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.year-cell-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.year-cell-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+}
+
+.event-count {
+  font-size: 24px;
+  font-weight: bold;
+  color: #3498db;
+}
+
+@media (max-width: 768px) {
+  .calendar-header {
+    flex-direction: column;
+  }
+  
+  .year-view {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+  }
+}
+
+/* Add these styles for the drag preview */
+
+.event-drag-preview {
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.event-preview-content {
+  min-width: 150px;
+  max-width: 250px;
+}

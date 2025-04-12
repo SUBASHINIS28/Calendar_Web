@@ -1,0 +1,126 @@
+.sidebar {
+  width: 250px;
+  background-color: white;
+  height: 100vh;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.goals-section,
+.tasks-section {
+  margin-bottom: 20px;
+}
+
+.goals-section h3,
+.tasks-section h3 {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.goals-list,
+.tasks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+}
+
+.goal-item,
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.goal-item:hover,
+.task-item:hover {
+  background-color: #f5f5f5;
+}
+
+.goal-item.selected {
+  background-color: #e3f2fd;
+}
+
+.color-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.goal-name,
+.task-name {
+  font-size: 14px;
+}
+
+.add-goal-form,
+.add-task-form {
+  display: flex;
+  margin-top: 10px;
+}
+
+.add-goal-form input[type="text"],
+.add-task-form input[type="text"] {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+  font-size: 14px;
+}
+
+.add-goal-form input[type="color"] {
+  width: 40px;
+  border: 1px solid #ddd;
+  border-left: none;
+  padding: 0;
+}
+
+.add-goal-form button,
+.add-task-form button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.add-goal-form button:hover,
+.add-task-form button:hover {
+  background-color: #2980b9;
+}
+
+.loading-indicator,
+.no-goal-selected,
+.no-tasks {
+  padding: 10px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+.task-item {
+  cursor: grab;
+}
+
+.task-item:active {
+  cursor: grabbing;
+}

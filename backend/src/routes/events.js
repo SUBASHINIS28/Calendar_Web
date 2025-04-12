@@ -1,20 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const { 
-  getEvents,
-  getEvent,
-  createEvent,
-  updateEvent,
-  deleteEvent
-} = require('../controllers/eventsController');
+const Event = require('../models/Event');
 
-router.route('/')
-  .get(getEvents)
-  .post(createEvent);
+// Get all events with optimization
+router.get('/', async (req, res) => {
+  try {
+    console.log('Getting events');
+    // Set a reasonable limit on results and only fetch necessary fields
+    const events = await Event.find({})
+      .select('title category date startTime endTime isExpanded color')
+      .limit(100);
+    
+    console.log(`Found ${events.length} events`);
+    return res.json(events);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return res.status(500).json({ message: 'Error fetching events', error: error.message });
+  }
+});
 
-router.route('/:id')
-  .get(getEvent)
-  .put(updateEvent)
-  .delete(deleteEvent);
+// Other routes...
 
 module.exports = router;

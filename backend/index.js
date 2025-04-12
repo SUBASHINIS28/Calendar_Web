@@ -19,7 +19,7 @@ app.use(cors({
   origin: [
     'https://frontend-ekjay3v53-subashini-ss-projects.vercel.app',
     'https://frontend-ldtg0ds9v-subashini-ss-projects.vercel.app',
-    'https://frontend-orcin-eight-46.vercel.app', // Add this new URL
+    'https://frontend-orcin-eight-46.vercel.app',
     'http://localhost:3000'
   ],
   credentials: true

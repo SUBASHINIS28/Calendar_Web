@@ -3,14 +3,12 @@ require('dotenv').config();
 
 const connectDB = async () => {
   try {
-    // Remove this line:
+    // Remove this line completely:
     // mongoose.set('maxPoolSize', 5);
     
-    // Instead, add connection options directly to the connect method
     await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      // Connection timeouts to prevent hanging
       connectTimeoutMS: 5000,
       socketTimeoutMS: 6000
     });

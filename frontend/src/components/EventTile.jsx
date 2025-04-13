@@ -38,27 +38,34 @@ const EventTile = ({ event, currentWeek, viewType }) => {
   
   // Calculate position and height for the event tile
   const calculatePosition = () => {
+    // Get hours and minutes, ensuring timezone consistency
     const startHour = startTime.getHours();
     const startMinute = startTime.getMinutes();
     
     // Calculate duration in minutes
     const durationMinutes = (endTime - startTime) / (1000 * 60);
     
-    // Calculate top position (based on start time)
+    // Improved calculation for top position
     const top = (startHour * 60 + startMinute) / 30 * 40; // 40px per 30-min slot
     
-    // Calculate height (based on duration)
-    let height = (durationMinutes / 30) * 40; // 40px per 30-min slot
-    
-    // Apply minimum height for very short events (less than 30 min)
-    // This ensures even 15-min events are clearly visible
-    const MIN_EVENT_HEIGHT = 20; // Minimum height in pixels
+    // Ensure minimum height for visibility
+    let height = (durationMinutes / 30) * 40;
+    const MIN_EVENT_HEIGHT = 20; 
     height = Math.max(height, MIN_EVENT_HEIGHT);
+    
+    console.log('Event position calculation:', {
+      event: event.title,
+      startHour,
+      startMinute,
+      durationMinutes,
+      top,
+      height
+    });
     
     return {
       top: `${top}px`,
       height: `${height}px`,
-      width: '90%', // Leave some margin
+      width: '90%',
       left: '5%',
       opacity: isDragging ? 0.5 : 1,
     };
@@ -103,6 +110,7 @@ const EventTile = ({ event, currentWeek, viewType }) => {
     <div 
       ref={drag}
       className={`event-tile ${event.isExpanded ? 'expanded' : ''} ${isDragging ? 'dragging' : ''} ${isDeleting ? 'deleting' : ''}`}
+      data-category={event.category}
       style={{
         ...calculatePosition(),
         ...getCategoryStyle(),

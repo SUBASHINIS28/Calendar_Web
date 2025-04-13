@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGoals, addGoal, selectGoal, deleteGoal } from '../redux/slices/goalsSlice';
 import { fetchTasks, addTask, filterTasksByGoal, deleteTask } from '../redux/slices/tasksSlice';
 import TaskItem from './TaskItem';
+import { FiPlus, FiTarget, FiCheckSquare, FiTrash2, FiStar } from 'react-icons/fi';
 import '../styles/sidebar.css';
 
 const Sidebar = () => {
@@ -13,6 +14,7 @@ const Sidebar = () => {
   const [newGoalName, setNewGoalName] = useState('');
   const [newGoalColor, setNewGoalColor] = useState('#00CED1');
   const [newTaskName, setNewTaskName] = useState('');
+  const [isAddingGoal, setIsAddingGoal] = useState(false);
   
   // Fetch goals and tasks when component mounts
   useEffect(() => {
@@ -37,6 +39,7 @@ const Sidebar = () => {
     }));
     
     setNewGoalName('');
+    setIsAddingGoal(false);
   };
   
   // Handle creating a new task
@@ -72,14 +75,61 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <h2>Goals & Tasks</h2>
+        <div className="sidebar-logo">
+          <FiStar className="star-icon" />
+          <h2>Goals & Tasks</h2>
+        </div>
+        <div className="sidebar-stats">
+          <div className="stat-item">
+            <div className="stat-value">{goals.length}</div>
+            <div className="stat-label">Goals</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-value">{filteredTasks.length}</div>
+            <div className="stat-label">Tasks</div>
+          </div>
+        </div>
       </div>
       
       <div className="goals-section">
-        <h3>Goals</h3>
+        <div className="section-header">
+          <h3><FiTarget className="section-icon" /> Goals</h3>
+          <button 
+            className="add-button"
+            onClick={() => setIsAddingGoal(!isAddingGoal)}
+            title="Add new goal"
+          >
+            <FiPlus />
+          </button>
+        </div>
+        
+        {isAddingGoal && (
+          <form onSubmit={handleAddGoal} className="add-goal-form">
+            <input
+              type="text"
+              placeholder="New goal name"
+              value={newGoalName}
+              onChange={e => setNewGoalName(e.target.value)}
+              required
+              autoFocus
+            />
+            <div className="color-picker-wrapper">
+              <input
+                type="color"
+                value={newGoalColor}
+                onChange={e => setNewGoalColor(e.target.value)}
+                className="color-picker"
+              />
+            </div>
+            <button type="submit" className="submit-button">Add</button>
+          </form>
+        )}
         
         {goalsLoading ? (
-          <div className="loading-indicator">Loading goals...</div>
+          <div className="loading-indicator">
+            <div className="loading-spinner"></div>
+            <span>Loading goals...</span>
+          </div>
         ) : (
           <ul className="goals-list">
             {goals.map(goal => (
@@ -88,77 +138,81 @@ const Sidebar = () => {
                 className={`goal-item ${selectedGoalId === goal._id ? 'selected' : ''}`}
                 onClick={() => handleGoalSelect(goal._id)}
               >
-                <span 
-                  className="color-indicator" 
-                  style={{ backgroundColor: goal.color }}
-                ></span>
-                <span className="goal-name">{goal.name}</span>
+                <div className="goal-content">
+                  <span 
+                    className="color-indicator" 
+                    style={{ backgroundColor: goal.color }}
+                  ></span>
+                  <span className="goal-name">{goal.name}</span>
+                </div>
                 <button 
                   className="delete-btn"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent goal selection when clicking delete
+                    e.stopPropagation();
                     handleDeleteGoal(goal._id);
                   }}
                   title="Delete goal"
                 >
-                  ×
+                  <FiTrash2 />
                 </button>
               </li>
             ))}
-          </ul>
-        )}
-        
-        <form onSubmit={handleAddGoal} className="add-goal-form">
-          <input
-            type="text"
-            placeholder="New goal name"
-            value={newGoalName}
-            onChange={e => setNewGoalName(e.target.value)}
-            required
-          />
-          <input
-            type="color"
-            value={newGoalColor}
-            onChange={e => setNewGoalColor(e.target.value)}
-          />
-          <button type="submit">Add</button>
-        </form>
-      </div>
-      
-      <div className="tasks-section">
-        <h3>Tasks</h3>
-        
-        {!selectedGoalId ? (
-          <div className="no-goal-selected">Select a goal to see tasks</div>
-        ) : tasksLoading ? (
-          <div className="loading-indicator">Loading tasks...</div>
-        ) : (
-          <ul className="tasks-list">
-            {filteredTasks.map(task => (
-              <TaskItem 
-                key={task._id} 
-                task={task} 
-                onDelete={() => handleDeleteTask(task._id)}
-              />
-            ))}
             
-            {filteredTasks.length === 0 && (
-              <div className="no-tasks">No tasks for this goal yet</div>
+            {goals.length === 0 && !goalsLoading && (
+              <div className="empty-state">
+                <p>No goals yet. Create your first goal!</p>
+              </div>
             )}
           </ul>
         )}
+      </div>
+      
+      <div className="tasks-section">
+        <div className="section-header">
+          <h3><FiCheckSquare className="section-icon" /> Tasks</h3>
+        </div>
         
-        {selectedGoalId && (
-          <form onSubmit={handleAddTask} className="add-task-form">
-            <input
-              type="text"
-              placeholder="New task name"
-              value={newTaskName}
-              onChange={e => setNewTaskName(e.target.value)}
-              required
-            />
-            <button type="submit">Add</button>
-          </form>
+        {!selectedGoalId ? (
+          <div className="no-goal-selected">
+            <p>Select a goal to see tasks</p>
+            <FiTarget className="large-icon" />
+          </div>
+        ) : tasksLoading ? (
+          <div className="loading-indicator">
+            <div className="loading-spinner"></div>
+            <span>Loading tasks...</span>
+          </div>
+        ) : (
+          <>
+            <ul className="tasks-list">
+              {filteredTasks.map(task => (
+                <TaskItem 
+                  key={task._id} 
+                  task={task} 
+                  onDelete={() => handleDeleteTask(task._id)}
+                />
+              ))}
+              
+              {filteredTasks.length === 0 && (
+                <div className="empty-state">
+                  <p>No tasks for this goal yet</p>
+                </div>
+              )}
+            </ul>
+            
+            <form onSubmit={handleAddTask} className="add-task-form">
+              <input
+                type="text"
+                placeholder="New task name"
+                value={newTaskName}
+                onChange={e => setNewTaskName(e.target.value)}
+                required
+              />
+              <button type="submit" className="submit-button">
+                <FiPlus />
+              </button>
+            </form>
+          </>
         )}
       </div>
     </div>

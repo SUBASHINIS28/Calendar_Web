@@ -200,9 +200,22 @@ const Calendar = () => {
       
       // Check if the event overlaps with this time slot
       // This handles partial overlaps for 15-minute events too
-      return (
-        (eventStart < slotEndTime && eventEnd > slotStartTime)
-      );
+      const isMatch = eventStart < slotEndTime && eventEnd > slotStartTime;
+
+      console.log('Checking event match:', {
+        event: event.title,
+        eventDate: new Date(event.date).toISOString(),
+        eventStart: new Date(event.startTime).toISOString(),
+        eventStartHours: new Date(event.startTime).getHours(),
+        eventStartMinutes: new Date(event.startTime).getMinutes(),
+        slotDate: slotDate.toISOString(),
+        slotStart: slotStartTime.toISOString(),
+        slotStartHours: hours,
+        slotStartMinutes: minutes,
+        isMatch: isMatch
+      });
+
+      return isMatch;
     });
   };
 

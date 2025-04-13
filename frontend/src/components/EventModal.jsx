@@ -76,45 +76,48 @@ const EventModal = ({ isOpen, onClose, initialData, editMode = false }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Create proper Date objects for the backend
-    const date = new Date(formData.date);
-    date.setHours(0, 0, 0, 0); // Set to midnight for consistent date handling
+    // Create proper Date objects with timezone awareness
+    const dateObj = new Date(formData.date);
     
-    // Create startTime by combining date with time
+    // Parse time inputs into hours and minutes
     const [startHours, startMinutes] = formData.startTime.split(':').map(Number);
-    const startTime = new Date(date);
+    const [endHours, endMinutes] = formData.endTime.split(':').map(Number);
+    
+    // Create new date objects for start and end times
+    const startTime = new Date(dateObj);
     startTime.setHours(startHours, startMinutes, 0, 0);
     
-    // Create endTime by combining date with time
-    const [endHours, endMinutes] = formData.endTime.split(':').map(Number);
-    const endTime = new Date(date);
+    const endTime = new Date(dateObj);
     endTime.setHours(endHours, endMinutes, 0, 0);
     
-    // Validate that end time is after start time
+    // Validate times
     if (endTime <= startTime) {
       alert('End time must be after start time');
       return;
     }
     
-    // Prepare event data - use ISO strings to preserve time info
+    // Create a midnight version of the date for date-only comparisons
+    const midnightDate = new Date(dateObj);
+    midnightDate.setHours(0, 0, 0, 0);
+    
+    // Prepare event data
     const eventData = {
       title: formData.title,
       category: formData.category,
-      date: date.toISOString(),
+      date: midnightDate.toISOString(),
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
       color: formData.color,
       isExpanded: false
     };
     
-    // Dispatch action based on mode (edit or create)
+    // Dispatch action
     if (editMode && initialData?._id) {
       dispatch(updateEvent({ id: initialData._id, eventData }));
     } else {
       dispatch(addEvent(eventData));
     }
     
-    // Close modal
     onClose();
   };
   

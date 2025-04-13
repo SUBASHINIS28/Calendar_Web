@@ -44,13 +44,30 @@ exports.getEvent = async (req, res) => {
 // @access  Public
 exports.createEvent = async (req, res) => {
   try {
-    // Ensure dates are properly parsed
+    console.log('Received event data:', req.body);
+    
+    // Create proper Date objects from ISO strings
+    const startTime = new Date(req.body.startTime);
+    const endTime = new Date(req.body.endTime);
+    const date = new Date(req.body.date);
+    
+    // Set date to midnight for consistent date handling
+    date.setHours(0, 0, 0, 0);
+    
+    // Create the event with properly parsed dates
     const eventData = {
       ...req.body,
-      startTime: new Date(req.body.startTime),
-      endTime: new Date(req.body.endTime),
-      date: new Date(req.body.date)
+      startTime,
+      endTime,
+      date
     };
+    
+    console.log('Processed event data:', {
+      ...eventData,
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
+      date: date.toISOString()
+    });
     
     const event = await Event.create(eventData);
     res.status(201).json(event);

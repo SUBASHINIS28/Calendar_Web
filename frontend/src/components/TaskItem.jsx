@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 
-const TaskItem = ({ task }) => {
+const TaskItem = ({ task, onDelete }) => {
   const [{ isDragging }, drag] = useDrag({
     type: 'TASK',
     item: { 
@@ -24,6 +24,16 @@ const TaskItem = ({ task }) => {
         style={{ backgroundColor: task.color }}
       ></span>
       <span className="task-name">{task.name}</span>
+      <button 
+        className="delete-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
+        title="Delete task"
+      >
+        ×
+      </button>
     </li>
   );
 };

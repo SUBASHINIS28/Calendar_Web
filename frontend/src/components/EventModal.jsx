@@ -27,19 +27,26 @@ const EventModal = ({ isOpen, onClose, initialData, editMode = false }) => {
     { value: 'social', label: 'Social', color: '#fd79a8' }
   ];
   
-  // Initialize form with initial data if available
+  // Update the useEffect for initialData
   useEffect(() => {
     if (initialData) {
-      const startDate = new Date(initialData.startTime);
-      const endDate = new Date(initialData.endTime);
+      // Handle both Date objects and ISO strings
+      const startDate = initialData.startTime instanceof Date ? 
+        initialData.startTime : new Date(initialData.startTime);
+      
+      const endDate = initialData.endTime instanceof Date ? 
+        initialData.endTime : new Date(initialData.endTime);
+      
+      // Get date from startTime, not from separate date field
+      const eventDate = initialData.date instanceof Date ?
+        initialData.date : new Date(initialData.date || initialData.startTime);
       
       setFormData({
-        ...initialData,
-        date: formatDateToString(startDate),
-        startTime: formatTimeToString(startDate),
-        endTime: formatTimeToString(endDate),
         title: initialData.title || '',
         category: initialData.category || 'work',
+        date: formatDateToString(eventDate),
+        startTime: formatTimeToString(startDate),
+        endTime: formatTimeToString(endDate),
         color: initialData.color || ''
       });
     }
@@ -65,12 +72,13 @@ const EventModal = ({ isOpen, onClose, initialData, editMode = false }) => {
     }
   };
   
-  // Handle form submission
+  // Update the handleSubmit function
   const handleSubmit = (e) => {
     e.preventDefault();
     
     // Create proper Date objects for the backend
     const date = new Date(formData.date);
+    date.setHours(0, 0, 0, 0); // Set to midnight for consistent date handling
     
     // Create startTime by combining date with time
     const [startHours, startMinutes] = formData.startTime.split(':').map(Number);

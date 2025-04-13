@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchGoals, addGoal, selectGoal } from '../redux/slices/goalsSlice';
-import { fetchTasks, addTask, filterTasksByGoal } from '../redux/slices/tasksSlice';
+import { fetchGoals, addGoal, selectGoal, deleteGoal } from '../redux/slices/goalsSlice';
+import { fetchTasks, addTask, filterTasksByGoal, deleteTask } from '../redux/slices/tasksSlice';
 import TaskItem from './TaskItem';
 import '../styles/sidebar.css';
 
@@ -54,6 +54,20 @@ const Sidebar = () => {
     
     setNewTaskName('');
   };
+
+  // Handle deleting a goal
+  const handleDeleteGoal = (goalId) => {
+    if (window.confirm('Are you sure you want to delete this goal? All associated tasks will also be deleted.')) {
+      dispatch(deleteGoal(goalId));
+    }
+  };
+
+  // Handle deleting a task
+  const handleDeleteTask = (taskId) => {
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      dispatch(deleteTask(taskId));
+    }
+  };
   
   return (
     <div className="sidebar">
@@ -79,6 +93,16 @@ const Sidebar = () => {
                   style={{ backgroundColor: goal.color }}
                 ></span>
                 <span className="goal-name">{goal.name}</span>
+                <button 
+                  className="delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent goal selection when clicking delete
+                    handleDeleteGoal(goal._id);
+                  }}
+                  title="Delete goal"
+                >
+                  ×
+                </button>
               </li>
             ))}
           </ul>
@@ -111,7 +135,11 @@ const Sidebar = () => {
         ) : (
           <ul className="tasks-list">
             {filteredTasks.map(task => (
-              <TaskItem key={task._id} task={task} />
+              <TaskItem 
+                key={task._id} 
+                task={task} 
+                onDelete={() => handleDeleteTask(task._id)}
+              />
             ))}
             
             {filteredTasks.length === 0 && (

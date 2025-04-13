@@ -46,13 +46,24 @@ exports.createEvent = async (req, res) => {
   try {
     console.log('Received event data:', req.body);
     
-    // Create proper Date objects from ISO strings
+    // Parse the date strings with explicit handling
     const startTime = new Date(req.body.startTime);
     const endTime = new Date(req.body.endTime);
-    const date = new Date(req.body.date);
     
-    // Set date to midnight for consistent date handling
+    // Set date to midnight in local timezone
+    const date = new Date(req.body.date);
     date.setHours(0, 0, 0, 0);
+    
+    // Log time parts for debugging
+    console.log('Time components:', {
+      startHours: startTime.getHours(),
+      startMinutes: startTime.getMinutes(),
+      endHours: endTime.getHours(),
+      endMinutes: endTime.getMinutes(),
+      startTimeISOString: startTime.toISOString(),
+      endTimeISOString: endTime.toISOString(),
+      dateISOString: date.toISOString()
+    });
     
     // Create the event with properly parsed dates
     const eventData = {
@@ -61,13 +72,6 @@ exports.createEvent = async (req, res) => {
       endTime,
       date
     };
-    
-    console.log('Processed event data:', {
-      ...eventData,
-      startTime: startTime.toISOString(),
-      endTime: endTime.toISOString(),
-      date: date.toISOString()
-    });
     
     const event = await Event.create(eventData);
     res.status(201).json(event);
